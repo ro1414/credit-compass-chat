@@ -1,5 +1,5 @@
-import "https://deno.land/x/xhr@0.1.0/mod.ts";
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import 'https://deno.land/x/xhr@0.1.0/mod.ts';
+import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.52.0';
 
 const corsHeaders = {
@@ -14,15 +14,15 @@ serve(async (req) => {
   }
 
   try {
-    const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+    const openAIApiKey = Deno.env.get('OPEN_AI_API_KEY');
     if (!openAIApiKey) {
-      throw new Error('OPENAI_API_KEY is not set');
+      throw new Error('OPEN_AI_API_KEY is not set');
     }
 
     // Initialize Supabase client
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
-    
+
     const authHeader = req.headers.get('Authorization')!;
     const supabase = createClient(supabaseUrl, supabaseAnonKey, {
       global: {
@@ -31,7 +31,10 @@ serve(async (req) => {
     });
 
     // Get the current user
-    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
     if (userError || !user) {
       console.error('User error:', userError);
       throw new Error('User not authenticated');
@@ -99,7 +102,9 @@ Credit Information:
 Financial Goals:`;
       goals.forEach((goal, index) => {
         systemPrompt += `
-${index + 1}. ${goal.title}${goal.target_amount ? ` (Target: $${goal.target_amount})` : ''}${goal.target_date ? ` (Due: ${goal.target_date})` : ''}
+${index + 1}. ${goal.title}${goal.target_amount ? ` (Target: $${goal.target_amount})` : ''}${
+          goal.target_date ? ` (Due: ${goal.target_date})` : ''
+        }
    Status: ${goal.status || 'active'}
    Priority: ${goal.priority || 'medium'}`;
         if (goal.description) {
@@ -119,14 +124,14 @@ Please provide helpful, personalized financial advice based on this information.
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
+        Authorization: `Bearer ${openAIApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         model: 'gpt-4o-mini',
         messages: [
           { role: 'system', content: systemPrompt },
-          { role: 'user', content: message }
+          { role: 'user', content: message },
         ],
         temperature: 0.7,
         max_tokens: 1000,
@@ -145,25 +150,21 @@ Please provide helpful, personalized financial advice based on this information.
     console.log('AI response generated');
 
     // Save both messages to chat history
-    const { error: saveUserError } = await supabase
-      .from('chat_history')
-      .insert({
-        user_id: user.id,
-        message: message,
-        is_user_message: true,
-      });
+    const { error: saveUserError } = await supabase.from('chat_history').insert({
+      user_id: user.id,
+      message: message,
+      is_user_message: true,
+    });
 
     if (saveUserError) {
       console.error('Error saving user message:', saveUserError);
     }
 
-    const { error: saveAIError } = await supabase
-      .from('chat_history')
-      .insert({
-        user_id: user.id,
-        message: aiResponse,
-        is_user_message: false,
-      });
+    const { error: saveAIError } = await supabase.from('chat_history').insert({
+      user_id: user.id,
+      message: aiResponse,
+      is_user_message: false,
+    });
 
     if (saveAIError) {
       console.error('Error saving AI message:', saveAIError);
@@ -174,7 +175,6 @@ Please provide helpful, personalized financial advice based on this information.
     return new Response(JSON.stringify({ response: aiResponse }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
-
   } catch (error) {
     console.error('Error in chat-with-ai function:', error);
     return new Response(JSON.stringify({ error: error.message }), {
