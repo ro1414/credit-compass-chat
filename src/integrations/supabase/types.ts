@@ -14,7 +14,135 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      chat_history: {
+        Row: {
+          id: string
+          is_user_message: boolean
+          message: string
+          timestamp: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          is_user_message: boolean
+          message: string
+          timestamp?: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          is_user_message?: boolean
+          message?: string
+          timestamp?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      credit_info: {
+        Row: {
+          credit_score: number | null
+          credit_utilization: number | null
+          id: string
+          last_updated: string
+          late_payments: number | null
+          total_debt: number | null
+          user_id: string
+        }
+        Insert: {
+          credit_score?: number | null
+          credit_utilization?: number | null
+          id?: string
+          last_updated?: string
+          late_payments?: number | null
+          total_debt?: number | null
+          user_id: string
+        }
+        Update: {
+          credit_score?: number | null
+          credit_utilization?: number | null
+          id?: string
+          last_updated?: string
+          late_payments?: number | null
+          total_debt?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      financial_goals: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          notes: string | null
+          priority: string | null
+          status: string | null
+          target_amount: number | null
+          target_date: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          notes?: string | null
+          priority?: string | null
+          status?: string | null
+          target_amount?: number | null
+          target_date?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          notes?: string | null
+          priority?: string | null
+          status?: string | null
+          target_amount?: number | null
+          target_date?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          age: number | null
+          created_at: string
+          email: string | null
+          first_name: string | null
+          id: string
+          last_name: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          age?: number | null
+          created_at?: string
+          email?: string | null
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          age?: number | null
+          created_at?: string
+          email?: string | null
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
