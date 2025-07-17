@@ -97,8 +97,8 @@ const Chat = () => {
     await saveMessage(userMessage, true);
 
     try {
-      // Call AI edge function (placeholder for now)
-      const { data, error } = await supabase.functions.invoke('financial-coach', {
+      // Call AI edge function
+      const { data, error } = await supabase.functions.invoke('chat-with-ai', {
         body: { message: userMessage }
       });
 
@@ -107,14 +107,11 @@ const Chat = () => {
       // Add AI response to UI
       const aiMsg: ChatMessage = {
         id: (Date.now() + 1).toString(),
-        message: data.response || "I'm here to help with your financial goals! This is a placeholder response. The AI integration will be set up soon.",
+        message: data.response,
         is_user_message: false,
         timestamp: new Date().toISOString(),
       };
       setMessages(prev => [...prev, aiMsg]);
-
-      // Save AI response
-      await saveMessage(aiMsg.message, false);
 
     } catch (error) {
       console.error('Error sending message:', error);
