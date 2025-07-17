@@ -49,6 +49,8 @@ serve(async (req) => {
       .eq('user_id', user.id)
       .single();
 
+    console.log('profile', profile);
+
     if (profileError) {
       console.error('Profile error:', profileError);
     }
@@ -77,14 +79,14 @@ serve(async (req) => {
     // Parse the request body
     const { message } = await req.json();
     console.log('User message:', message);
+    // TODO: sanitize the message - look for prompt injection, jailbreaks, etc.
 
     // Create system prompt with user information
     let systemPrompt = `You are a helpful financial coach AI assistant. You provide personalized financial advice based on the user's information.
 
 User Information:
 - Name: ${profile?.first_name || 'Unknown'} ${profile?.last_name || ''}
-- Age: ${profile?.age || 'Not provided'}
-- Email: ${profile?.email || 'Not provided'}`;
+- Age: ${profile?.age || 'Not provided'}`;
 
     if (creditInfo) {
       systemPrompt += `
